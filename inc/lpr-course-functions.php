@@ -2324,4 +2324,4 @@ function learn_press_course_enroll_required( $course_id = null ){
 }
 
 // functions for anonymous user with quiz
-require_once(LPR_PLUGIN_PATH . '/inc/lpr-anonymous-user-quiz-functions.php');
+require_once( LPR_PLUGIN_PATH . '/inc/lpr-anonymous-user-quiz-functions.php');

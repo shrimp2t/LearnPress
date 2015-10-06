@@ -12,6 +12,13 @@ Author URI: http://thimpress.com
  * Prevent loading this file directly
  */
 defined( 'ABSPATH' ) || exit;
+
+if ( ! defined( 'LPR_PLUGIN_PATH'  ) ) {
+    define( 'LPR_PLUGIN_PATH', trailingslashit( plugin_dir_path( __FILE__  ) ) );
+    define( 'LPR_PLUGIN_URL', trailingslashit( plugins_url('/', __FILE__  ) ) );
+}
+
+
 if ( !class_exists( 'LearnPress' ) ) {
     /**
      * Class LearnPress
@@ -22,7 +29,7 @@ if ( !class_exists( 'LearnPress' ) ) {
          * Current version of the plugin
 		 * @var string
 		 */
-		public $version = '0.9.14';
+		public static $version = '0.9.14';
 
 		/**
          * The single instance of the class
@@ -59,8 +66,8 @@ if ( !class_exists( 'LearnPress' ) ) {
 
 			// Define the url and path of plugin
 			$this->plugin_file = __FILE__;
-			$this->plugin_url  = untrailingslashit( plugins_url( '/', __FILE__ ) );
-			$this->plugin_path = untrailingslashit( plugin_dir_path( __FILE__ ) );
+			$this->plugin_url  = LPR_PLUGIN_URL;
+			$this->plugin_path = LPR_PLUGIN_PATH;
 
 			// defines const
 			$this->define_const();
@@ -116,10 +123,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 		 *
 		 */
 		function define_const() {
-			$this->define( 'LPR_PLUGIN_FILE', __FILE__ );
-			$this->define( 'LEARNPRESS_VERSION', $this->version );
-			$this->define( 'LPR_PLUGIN_URL', $this->plugin_url() );
-			$this->define( 'LPR_PLUGIN_PATH', $this->plugin_path() );
+			$this->define( 'LEARNPRESS_VERSION', self::$version );
 			$this->define( 'LPR_JS_URL', $this->plugin_url( "assets/js/" ) );
 			$this->define( 'LPR_CSS_URL', $this->plugin_url( "assets/css/" ) );
 			$this->define( 'LPR_ASSIGNMENT_CPT', 'lpr_assignment' );
@@ -150,11 +154,11 @@ if ( !class_exists( 'LearnPress' ) ) {
 		 */
 		function include_post_types() {
 			// Register custom-post-type and taxonomies
-			require_once 'inc/custom-post-types/course.php';
-			require_once 'inc/custom-post-types/lesson.php';
-			require_once 'inc/custom-post-types/quiz.php';
-			require_once 'inc/custom-post-types/question.php';
-			require_once 'inc/custom-post-types/order.php';
+			require_once LPR_PLUGIN_PATH.'inc/custom-post-types/course.php';
+			require_once LPR_PLUGIN_PATH.'inc/custom-post-types/lesson.php';
+			require_once LPR_PLUGIN_PATH.'inc/custom-post-types/quiz.php';
+			require_once LPR_PLUGIN_PATH.'inc/custom-post-types/question.php';
+			require_once LPR_PLUGIN_PATH.'inc/custom-post-types/order.php';
 		}
 
         /**
@@ -223,20 +227,33 @@ if ( !class_exists( 'LearnPress' ) ) {
 		function includes() {
 
 			// include core functions
-			require_once 'inc/lpr-core-functions.php';
-			require_once 'inc/lpr-add-on-functions.php';
+			require_once LPR_PLUGIN_PATH.'inc/lpr-core-functions.php';
+			require_once LPR_PLUGIN_PATH.'inc/lpr-add-on-functions.php';
+
+            // Load theme functions
+            $files = array(
+                '/learnpress.php',
+                '/learnpress/learnpress.php'
+            );
+            foreach ( $files as $file ) {
+                $f = get_template_directory().$file;
+                if ( is_file( $f ) ) {
+                    require_once $f;
+                }
+            }
+
 
 			// auto include file for class if class doesn't exists
-			require_once 'inc/class.lpr-autoloader.php';
+			require_once LPR_PLUGIN_PATH.'inc/class.lpr-autoloader.php';
 
-			require_once 'inc/class.lpr-install.php';
+			require_once LPR_PLUGIN_PATH.'inc/class.lpr-install.php';
 
 			if ( is_admin() ) {
-				require_once 'lib/meta-box/meta-box.php';
+				require_once LPR_PLUGIN_PATH.'lib/meta-box/meta-box.php';
 				//Include admin settings
-				require_once 'inc/admin/class.lpr-admin.php';
+				require_once LPR_PLUGIN_PATH.'inc/admin/class.lpr-admin.php';
 
-				require_once 'inc/admin/class.lpr-admin-settings.php';
+				require_once LPR_PLUGIN_PATH.'inc/admin/class.lpr-admin-settings.php';
 
 			} else {
 
@@ -244,65 +261,65 @@ if ( !class_exists( 'LearnPress' ) ) {
 
 			$this->include_post_types();
 
-			require_once 'inc/class.lpr-session.php';
+			require_once LPR_PLUGIN_PATH.'inc/class.lpr-session.php';
 
-			require_once 'inc/admin/class.lpr-profile.php';
-			require_once 'inc/admin/class.lpr-email.php';
+			require_once LPR_PLUGIN_PATH.'inc/admin/class.lpr-profile.php';
+			require_once LPR_PLUGIN_PATH.'inc/admin/class.lpr-email.php';
 
-			require_once 'inc/order/class.lpr-order.php';
-			require_once 'inc/order/lpr-order-functions.php';
+			require_once LPR_PLUGIN_PATH.'inc/order/class.lpr-order.php';
+			require_once LPR_PLUGIN_PATH.'inc/order/lpr-order-functions.php';
 
-			require_once 'inc/class.lpr-question-type.php';
+			require_once LPR_PLUGIN_PATH.'inc/class.lpr-question-type.php';
 
 			// user API
-			require_once 'inc/user/class.lpr-user.php';
-			require_once 'inc/user/lpr-user-functions.php';
+			require_once LPR_PLUGIN_PATH.'inc/user/class.lpr-user.php';
+			require_once LPR_PLUGIN_PATH.'inc/user/lpr-user-functions.php';
 
 			// course functions
-			require_once( 'inc/lpr-course-functions.php' );
+			require_once( LPR_PLUGIN_PATH.'inc/lpr-course-functions.php' );
 
 			// quiz functions
-			require_once 'inc/lpr-quiz-functions.php';
+			require_once LPR_PLUGIN_PATH.'inc/lpr-quiz-functions.php';
 
 			if ( is_admin() ) {
-				require_once( 'inc/admin/class.lpr-admin-assets.php' );
+				require_once( LPR_PLUGIN_PATH.'inc/admin/class.lpr-admin-assets.php' );
 
 				//Include pointers
-				require_once 'inc/admin/pointers/pointers.php';
+				require_once LPR_PLUGIN_PATH.'inc/admin/pointers/pointers.php';
 			} else {
 				// assets
-				require_once 'inc/class.lpr-assets.php';
+				require_once LPR_PLUGIN_PATH.'inc/class.lpr-assets.php';
 
 				// shortcodes
-				require_once 'inc/class.lpr-shortcodes.php';
+				require_once LPR_PLUGIN_PATH.'inc/class.lpr-shortcodes.php';
 
 				// Include short-code file
-				require_once 'inc/shortcodes/profile-page.php';
+				require_once LPR_PLUGIN_PATH.'inc/shortcodes/profile-page.php';
 
-				require_once 'inc/shortcodes/archive-courses.php';
+				require_once LPR_PLUGIN_PATH.'inc/shortcodes/archive-courses.php';
 
 
 			}
-            require_once( 'inc/lpr-quiz-functions.php' );
+            require_once( LPR_PLUGIN_PATH.'inc/lpr-quiz-functions.php' );
             // include template functions
-            require_once( 'inc/lpr-template-functions.php' );
-            require_once( 'inc/lpr-template-hooks.php' );
+            require_once( LPR_PLUGIN_PATH.'inc/lpr-template-functions.php' );
+            require_once( LPR_PLUGIN_PATH.'inc/lpr-template-hooks.php' );
 			// settings
-			require_once 'inc/class.lpr-settings.php';
+			require_once LPR_PLUGIN_PATH.'inc/class.lpr-settings.php';
 			// simple cart
-			require_once 'inc/cart/class.lpr-cart.php';
+			require_once LPR_PLUGIN_PATH.'inc/cart/class.lpr-cart.php';
 			// payment gateways
-			require_once 'inc/gateways/class.lpr-gateway-abstract.php';
-			require_once 'inc/gateways/class.lpr-gateways.php';
+			require_once LPR_PLUGIN_PATH.'inc/gateways/class.lpr-gateway-abstract.php';
+			require_once LPR_PLUGIN_PATH.'inc/gateways/class.lpr-gateways.php';
 
 			//if ( defined( 'DOING_AJAX' ) ) {
 			//add ajax-action
-			require_once 'inc/admin/class.lpr-admin-ajax.php';
-			require_once 'inc/class.lpr-ajax.php';
-			require_once 'inc/class.lpr-multi-language.php';
+			require_once LPR_PLUGIN_PATH.'inc/admin/class.lpr-admin-ajax.php';
+			require_once LPR_PLUGIN_PATH.'inc/class.lpr-ajax.php';
+			require_once LPR_PLUGIN_PATH.'inc/class.lpr-multi-language.php';
 
             if( ! empty( $_REQUEST['debug'] ) ){
-                require_once( 'inc/debug.php' );
+                require_once( LPR_PLUGIN_PATH.'inc/debug.php' );
             }
 			//}
 		}
@@ -315,7 +332,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 		 * @return string
 		 */
 		public function plugin_url( $sub_dir = '' ) {
-			return $this->plugin_url . ( $sub_dir ? "/{$sub_dir}" : '' );
+			return LPR_PLUGIN_URL . ( $sub_dir ? "/{$sub_dir}" : '' );
 		}
 
 		/**
@@ -326,7 +343,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 		 * @return string
 		 */
 		public function plugin_path( $sub_dir = '' ) {
-			return $this->plugin_path . ( $sub_dir ? "/{$sub_dir}" : '' );
+			return LPR_PLUGIN_PATH . ( $sub_dir ? "/{$sub_dir}" : '' );
 		}
 
 		/**
@@ -497,6 +514,12 @@ if ( !class_exists( 'LearnPress' ) ) {
 		 * @access public
 		 * @return void
 		 */
+
+
+        /**
+         *
+         * // This method not used any where
+         *
 		public function lpr_scripts() {
 			wp_enqueue_style( 'lpr-learnpress-css', LPR_CSS_URL . 'learnpress.css' );
             wp_enqueue_style( 'lpr-time-circle-css', LPR_CSS_URL . 'timer.css' );
@@ -507,6 +530,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 
             wp_enqueue_script( 'lpr-learnpress-js', LPR_JS_URL . 'learnpress.js', array( 'jquery' ), '', true );
 		}
+         */
 
 	} // end class
 }
@@ -532,8 +556,6 @@ function LearnPress() {
 function load_learn_press() {
 	$GLOBALS['learn_press'] = array();
 	$GLOBALS['LearnPress']  = LearnPress();
-
-
 }
 
 // Done! entry point of the plugin
