@@ -332,7 +332,16 @@ function learn_press_user_has_completed_quiz( $user_id = null, $quiz_id = null )
 	$retake         = get_user_meta( $user_id, '_lpr_quiz_retake', true );
 
 	// if user can not retake a quiz or has already completed a quiz
-	if ( ( !$retake || !in_array( $quiz_id, $retake ) ) && $quiz_completed && array_key_exists( $quiz_id, $quiz_completed ) ) {
+
+    if ( ! is_array( $quiz_completed ) ) {
+        $quiz_completed = array();
+    }
+
+    if ( ! is_array( $retake ) ) {
+        $retake = array();
+    }
+
+	if ( ( empty( $retake )  || !in_array( $quiz_id, $retake ) ) && $quiz_completed && isset( $quiz_completed[ $quiz_id ] ) ) {
 		$completed = true;
 	}
     //print_r($quiz_completed);
