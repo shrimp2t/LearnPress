@@ -29,7 +29,7 @@ if ( !class_exists( 'LearnPress' ) ) {
          * Current version of the plugin
 		 * @var string
 		 */
-		public static $version = '0.9.14';
+		public $version = '0.9.14';
 
 		/**
          * The single instance of the class
@@ -123,7 +123,7 @@ if ( !class_exists( 'LearnPress' ) ) {
 		 *
 		 */
 		function define_const() {
-			$this->define( 'LEARNPRESS_VERSION', self::$version );
+			$this->define( 'LEARNPRESS_VERSION',$this->version );
 			$this->define( 'LPR_JS_URL', $this->plugin_url( "assets/js/" ) );
 			$this->define( 'LPR_CSS_URL', $this->plugin_url( "assets/css/" ) );
 			$this->define( 'LPR_ASSIGNMENT_CPT', 'lpr_assignment' );
