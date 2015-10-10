@@ -168,6 +168,10 @@ https://www.transifex.com/projects/p/learnpress/
 
 == Changelog ==  
 
+= 0.9.15 =
+- Fixed can not do quiz for guest.
+- Fixed admin notice doesn't close when user click.
+
 = 0.9.14 =
 - Fixed can not start a quiz for guest.
 - Fixed course evaluation error and shows wrong message
